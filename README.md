@@ -37,6 +37,37 @@
 - [Network Load Balancer](https://registry.terraform.io/providers/yandex-cloud/yandex/latest/docs/resources/lb_network_load_balancer).
 - [Группа ВМ с сетевым балансировщиком](https://cloud.yandex.ru/docs/compute/operations/instance-groups/create-with-balancer).
 
+#### Решение
+
+[variables.tf](./terraform/variables.tf) переменные с параметрами для всех объектов. Значения (только публичные) заданы в [public.auto.tfvars](./terraform/public.auto.tfvars)  
+[network.tf](./terraform/network.tf) описано создание VPC, subnets и load balancer
+[main.tf](./terraform/main.tf) создание шаблона cloud-init, получение images id и создание intance group + сервисного аккаунта для него
+[storage.tf](./terraform/storage.tf) создается bucket + сервисный аккаунт для управления и размещение object
+
+Выполнил ```terraform apply``` + получение ip сетевого балансировщика
+
+![1-1](./1.png)
+
+Проверка доступности
+
+![1-2](./2.png)
+
+Создан бакет, где размещен объект
+
+![1-3](./3.png)
+
+Попробовал остановить одну из ВМ, доступность ресурса не прервалась. На балансировщике видно состояние таргетов в группе
+
+![1-4](./4.png)
+![1-5](./5.png)
+![1-6](./6.png)
+
+Затем она полностью исключилась из группы. Но при запуске ВМ повторно она добавилась в target group автоматически, это видно по истории операций
+
+![1-7](./7.png)
+![1-8](./8.png)
+
+
 ---
 ## Задание 2*. AWS (задание со звёздочкой)
 
